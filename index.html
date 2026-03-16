@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zest Cafe | Srikakulam</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap');
+        
+        :root {
+            --glow: 0 0 15px #f59e0b, 0 0 30px #f59e0b;
+        }
+        
+        .hero-bg {
+            background-image: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url('https://picsum.photos/id/1015/2000/1200');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .dark .hero-bg {
+            background-image: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)), url('https://picsum.photos/id/1015/2000/1200');
+        }
+        
+        .neon-glow {
+            text-shadow: var(--glow);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #f59e0b, 0 0 20px #f59e0b; }
+            to { text-shadow: 0 0 20px #f59e0b, 0 0 40px #f59e0b, 0 0 60px #d97706; }
+        }
+        
+        .coffee-steam {
+            position: relative;
+        }
+        
+        .coffee-steam::after {
+            content: '☁️';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            font-size: 18px;
+            animation: steam 2.5s infinite ease-in-out;
+            opacity: 0.7;
+        }
+        
+        @keyframes steam {
+            0% { transform: translateY(0) scale(1); opacity: 0.7; }
+            50% { transform: translateY(-25px) scale(1.2); opacity: 0.9; }
+            100% { transform: translateY(-45px) scale(0.8); opacity: 0; }
+        }
+        
+        .menu-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .menu-card:hover {
+            transform: translateY(-12px) scale(1.03);
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        }
+        
+        .modal {
+            animation: modalPop 0.3s ease-out;
+        }
+        
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #f59e0b;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover:after {
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white font-inter transition-colors duration-300">
+    <!-- NAVBAR -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-lg border-b border-amber-200 dark:border-zinc-800">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+            <!-- Logo -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-amber-500 rounded-2xl flex items-center justify-center text-white text-3xl shadow-lg">☕</div>
+                <div>
+                    <span class="text-3xl font-bold tracking-tighter text-amber-600 dark:text-amber-400">Zest</span>
+                    <span class="text-3xl font-bold tracking-tighter">Cafe</span>
+                </div>
+            </div>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center gap-10 text-lg font-medium">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#menu" class="nav-link">Menu</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#location" class="nav-link">Location</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </div>
+
+            <!-- Right side -->
+            <div class="flex items-center gap-6">
+                <!-- Toggle Mode -->
+                <button id="theme-toggle" 
+                        class="w-11 h-11 flex items-center justify-center rounded-2xl bg-amber-100 dark:bg-zinc-800 hover:bg-amber-200 dark:hover:bg-zinc-700 transition-all text-2xl">
+                    ☀️
+                </button>
+                
+                <!-- Hamburger -->
+                <button id="hamburger" 
+                        class="md:hidden w-11 h-11 flex flex-col items-center justify-center gap-1.5">
+                    <span class="bar w-6 h-0.5 bg-zinc-900 dark:bg-white rounded-full transition-all"></span>
+                    <span class="bar w-6 h-0.5 bg-zinc-900 dark:bg-white rounded-full transition-all"></span>
+                    <span class="bar w-6 h-0.5 bg-zinc-900 dark:bg-white rounded-full transition-all"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-zinc-900 border-t py-6">
+            <div class="flex flex-col gap-6 px-8 text-xl font-medium">
+                <a href="#home" class="mobile-link">Home</a>
+                <a href="#menu" class="mobile-link">Menu</a>
+                <a href="#about" class="mobile-link">About</a>
+                <a href="#location" class="mobile-link">Location</a>
+                <a href="#contact" class="mobile-link">Contact</a>
+                
+                <div class="pt-6 border-t flex flex-col gap-4">
+                    <a href="tel:+919642929909" 
+                       class="bg-amber-500 hover:bg-amber-600 text-white py-4 rounded-3xl text-center font-semibold text-lg flex items-center justify-center gap-3">
+                        <i class="fas fa-phone"></i> Call Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section id="home" class="hero-bg h-screen flex items-center justify-center relative text-white pt-20">
+        <div class="max-w-4xl text-center px-6">
+            <h1 class="text-7xl md:text-8xl font-bold tracking-tighter leading-none mb-4">ZEST CAFE</h1>
+            <p class="text-3xl md:text-4xl font-light tracking-wide mb-12">Where Every Sip Tells a Story</p>
+            
+            <!-- Visit Us Button -->
+            <a href="#menu" 
+               class="inline-block bg-white text-amber-700 hover:bg-amber-100 transition-all px-14 py-6 rounded-3xl text-2xl font-semibold shadow-2xl hover:shadow-3xl mb-8">
+                Visit Us Today →
+            </a>
+            
+            <!-- Open Daily Box -->
+            <div class="mx-auto max-w-xs bg-white/10 dark:bg-black/40 backdrop-blur-xl border border-white/30 rounded-3xl px-10 py-6 neon-glow">
+                <p class="text-2xl font-medium tracking-widest text-center">OPEN DAILY</p>
+                <p class="text-4xl font-bold text-amber-300 neon-glow">9:00 AM - 10:00 PM</p>
+            </div>
+        </div>
+
+        <!-- Scroll indicator -->
+        <div class="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/70">
+            <div class="text-sm tracking-widest">SCROLL</div>
+            <div class="w-px h-12 bg-gradient-to-b from-transparent via-white to-transparent"></div>
+        </div>
+    </section>
+
+    <!-- MENU INTRO + 4 BOXES -->
+    <section id="menu" class="py-24 bg-amber-50 dark:bg-zinc-900">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-6xl font-bold tracking-tight mb-3">Our Menu</h2>
+                <p class="text-3xl text-amber-600 dark:text-amber-400 font-light">Crafted with Love</p>
+            </div>
+
+            <!-- 4 Category Boxes -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <!-- Cold Coffee -->
+                <div onclick="showModal(0)" 
+                     class="menu-card bg-white dark:bg-zinc-800 rounded-3xl overflow-hidden shadow-xl cursor-pointer">
+                    <div class="h-56 bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-8xl">❄️</div>
+                    <div class="p-8 text-center">
+                        <h3 class="text-3xl font-semibold mb-1">Cold Coffee</h3>
+                        <p class="text-zinc-500 dark:text-zinc-400 text-lg">Refreshing brews</p>
+                    </div>
+                </div>
+
+                <!-- Hot Coffee -->
+                <div onclick="showModal(1)" 
+                     class="menu-card bg-white dark:bg-zinc-800 rounded-3xl overflow-hidden shadow-xl cursor-pointer coffee-steam">
+                    <div class="h-56 bg-gradient-to-br from-orange-400 to-amber-600 flex items-center justify-center text-8xl">☕</div>
+                    <div class="p-8 text-center">
+                        <h3 class="text-3xl font-semibold mb-1">Hot Coffee</h3>
+                        <p class="text-zinc-500 dark:text-zinc-400 text-lg">Steaming perfection</p>
+                    </div>
+                </div>
+
+                <!-- Cookies -->
+                <div onclick="showModal(2)" 
+                     class="menu-card bg-white dark:bg-zinc-800 rounded-3xl overflow-hidden shadow-xl cursor-pointer">
+                    <div class="h-56 bg-gradient-to-br from-amber-300 to-yellow-400 flex items-center justify-center text-8xl">🍪</div>
+                    <div class="p-8 text-center">
+                        <h3 class="text-3xl font-semibold mb-1">Cookies</h3>
+                        <p class="text-zinc-500 dark:text-zinc-400 text-lg">Freshly baked</p>
+                    </div>
+                </div>
+
+                <!-- Desserts -->
+                <div onclick="showModal(3)" 
+                     class="menu-card bg-white dark:bg-zinc-800 rounded-3xl overflow-hidden shadow-xl cursor-pointer">
+                    <div class="h-56 bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center text-8xl">🎂</div>
+                    <div class="p-8 text-center">
+                        <h3 class="text-3xl font-semibold mb-1">Desserts</h3>
+                        <p class="text-zinc-500 dark:text-zinc-400 text-lg">Sweet endings</p>
+                    </div>
+        </div>
+
+        <!-- === REPLACE THIS ENTIRE BLOCK (previous "Can't decide" section) === -->
+<div class="mt-20 max-w-md mx-auto">   <!-- Medium size orange box -->
+    <div class="bg-gradient-to-r from-[#f97316] to-[#fb923c] rounded-3xl p-12 shadow-2xl text-white text-center">
+        
+        <!-- Heading inside orange box (text size decreased) -->
+        <h3 class="text-4xl font-semibold tracking-tight leading-none">
+            Can't decide?<br>Let us help!
+        </h3>
+        
+        <!-- Sub text with heart -->
+        <p class="text-xl mt-8 leading-relaxed text-white/90">
+            Call us for recommendations <span class="text-3xl">❤️</span><br>
+            or visit our cafe to experience our full menu
+        </p>
+
+        <!-- Call button inside the orange box (smaller & clean) -->
+        <a href="tel:+919642929909" 
+           class="mt-10 inline-flex items-center justify-between w-full max-w-xs rounded-3xl px-8 py-6 bg-white text-orange-600 font-bold text-2xl shadow-inner hover:bg-amber-100 transition-all">
+            
+            <!-- Left: Icon + stacked text -->
+            <div class="flex items-center gap-4">
+                <i class="fas fa-phone-volume text-4xl"></i>
+                <div class="text-left text-xl leading-none">
+                    CALL<br>TO<br>
+                </div>
+            </div>
+            
+            <!-- Right: Number -->
+            <div class="text-right text-xl font-bold leading-tight">
+                +91 96429 29909<br>
+            </div>
+        </a>
+    </div>
+</div>
+<!-- === END OF REPLACEMENT === -->
+        </div>
+    </section>
+
+    <!-- COFFEE PORTRAIT + RATING -->
+    <div class="max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-16 items-center">
+        <div class="relative">
+            <!-- Portrait Coffee Image -->
+            <div class="aspect-[4/5] bg-zinc-200 dark:bg-zinc-800 rounded-3xl overflow-hidden shadow-2xl relative">
+                <img src="https://picsum.photos/id/201/600/800" 
+                     alt="Zest Cafe Coffee" 
+                     class="w-full h-full object-cover">
+                <!-- Overlay rating -->
+                <div class="absolute bottom-8 left-8 bg-white dark:bg-zinc-900 rounded-2xl p-6 shadow-xl">
+                    <div class="flex items-center gap-3">
+                        <div class="text-5xl">4.7</div>
+                        <div>
+                            <div class="flex text-amber-400 text-2xl">★★★★☆</div>
+                            <p class="text-sm font-medium">Google Rating</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div>
+            <div class="text-amber-600 dark:text-amber-400 text-6xl font-bold">ZC</div>
+            <h2 class="text-6xl font-bold leading-none tracking-tighter mt-2 mb-8">Zest Cafe</h2>
+            <p class="text-3xl font-light">4.7 Rating on Google</p>
+            <p class="text-4xl font-light mt-4 leading-tight">"Where Every Sip Tells a Story"</p>
+            <p class="mt-8 text-2xl text-zinc-600 dark:text-zinc-400">Premium Coffee • Delicious Food • Cozy Vibes</p>
+        </div>
+    </div>
+
+    <!-- FULL MENU SECTIONS (as per your paste) -->
+    <div class="max-w-7xl mx-auto px-6 py-16">
+        <!-- Hot Brews -->
+        <div class="mb-24">
+            <div class="flex justify-between items-end mb-10">
+                <div>
+                    <h3 class="text-5xl font-bold">Hot Brews</h3>
+                    <p class="text-2xl text-zinc-500">Classic Espresso • Cappuccino • More</p>
+                </div>
+                <div class="hidden md:block text-right">
+                    <a href="tel:+919642929909" class="text-amber-600 hover:underline text-xl">Need help choosing? Call us →</a>
+                </div>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white dark:bg-zinc-800 p-8 rounded-3xl">
+                    <div class="flex justify-between">
+                        <div>
+                            <h4 class="text-2xl font-semibold">Classic Espresso</h4>
+                            <p class="text-zinc-500">Rich and bold single shot</p>
+                        </div>
+                        <div class="text-4xl font-bold text-amber-600">₹89</div>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-zinc-800 p-8 rounded-3xl relative">
+                    <div class="flex justify-between">
+                        <div>
+                            <h4 class="text-2xl font-semibold">Cappuccino <span class="text-xs bg-amber-100 dark:bg-amber-900 px-3 py-1 rounded-full text-amber-700">Chef's Pick</span></h4>
+                            <p class="text-zinc-500">Perfectly balanced espresso with steamed milk</p>
+                        </div>
+                        <div class="text-4xl font-bold text-amber-600">₹119</div>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-zinc-800 p-8 rounded-3xl">
+                    <div class="flex justify-between">
+                        <div>
+                            <h4 class="text-2xl font-semibold">Cafe Latte</h4>
+                            <p class="text-zinc-500">Smooth espresso with velvety milk foam</p>
+                        </div>
+                        <div class="text-4xl font-bold text-amber-600">₹129</div>
+                    </div>
+                </div>
+                <!-- More items from your paste -->
+                <div class="bg-white dark:bg-zinc-800 p-8 rounded-3xl">
+                    <div class="flex justify-between">
+                        <div>
+                            <h4 class="text-2xl font-semibold">Americano</h4>
+                            <p class="text-zinc-500">Bold espresso with hot water</p>
+                        </div>
+                        <div class="text-4xl font-bold text-amber-600">₹99</div>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-zinc-800 p-8 rounded-3xl relative">
+                    <div class="flex justify-between">
+                        <div>
+                            <h4 class="text-2xl font-semibold">Mocha <span class="text-xs bg-amber-100 dark:bg-amber-900 px-3 py-1 rounded-full text-amber-700">Chef's Pick</span></h4>
+                            <p class="text-zinc-500">Espresso with chocolate and steamed milk</p>
+                        </div>
+                        <div class="text-4xl font-bold text-amber-600">₹149</div>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-zinc-800 p-8 rounded-3xl">
+                    <div class="flex justify-between">
+                        <div>
+                            <h4 class="text-2xl font-semibold">Flat White</h4>
+                            <p class="text-zinc-500">Double espresso with microfoam</p>
+                        </div>
+                        <div class="text-4xl font-bold text-amber-600">₹139</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Desserts -->
+        <div>
+            <div class="flex justify-between items-end mb-10">
+                <div>
+                    <h3 class="text-5xl font-bold">Desserts</h3>
+                </div>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- All desserts from your paste -->
+                <div class="bg-white dark:bg-zinc-800 p-8 rounded-3xl flex flex-col">
+                    <div class="flex-1">
+                        <h4 class="text-2xl font-semibold">Chocolate Brownie <span class="text-xs bg-amber-100 dark:bg-amber-900 px-3 py-1 rounded-full text-amber-700">Chef's Pick</span></h4>
+                        <p class="text-zinc-500">Warm brownie with chocolate chips</p>
+                    </div>
+                    <div class="text-4xl font-bold text-amber-600 mt-auto">₹99</div>
+                </div>
+                <div class="bg-white dark:bg-zinc-800 p-8 rounded-3xl flex flex-col">
+                    <div class="flex-1">
+                        <h4 class="text-2xl font-semibold">Cheesecake <span class="text-xs bg-amber-100 dark:bg-amber-900 px-3 py-1 rounded-full text-amber-700">Chef's Pick</span></h4>
+                        <p class="text-zinc-500">Classic New York style cheesecake</p>
+                    </div>
+                    <div class="text-4xl font-bold text-amber-600 mt-auto">₹129</div>
+                </div>
+                <div class="bg-white dark:bg-zinc-800 p-8 rounded-3xl flex flex-col">
+                    <div class="flex-1">
+                        <h4 class="text-2xl font-semibold">Tiramisu <span class="text-xs bg-amber-100 dark:bg-amber-900 px-3 py-1 rounded-full text-amber-700">Chef's Pick</span></h4>
+                        <p class="text-zinc-500">Italian coffee-flavored dessert</p>
+                    </div>
+                    <div class="text-4xl font-bold text-amber-600 mt-auto">₹149</div>
+                </div>
+                <!-- Remaining desserts -->
+                <div class="bg-white dark:bg-zinc-800 p-8 rounded-3xl flex flex-col">
+                    <div class="flex-1">
+                        <h4 class="text-2xl font-semibold">Waffle</h4>
+                        <p class="text-zinc-500">Belgian waffle with maple syrup</p>
+                    </div>
+                    <div class="text-4xl font-bold text-amber-600 mt-auto">₹119</div>
+                </div>
+                <div class="bg-white dark:bg-zinc-800 p-8 rounded-3xl flex flex-col">
+                    <div class="flex-1">
+                        <h4 class="text-2xl font-semibold">Ice Cream Sundae</h4>
+                        <p class="text-zinc-500">Vanilla ice cream with toppings</p>
+                    </div>
+                    <div class="text-4xl font-bold text-amber-600 mt-auto">₹109</div>
+                </div>
+                <div class="bg-white dark:bg-zinc-800 p-8 rounded-3xl flex flex-col">
+                    <div class="flex-1">
+                        <h4 class="text-2xl font-semibold">Cookie Platter</h4>
+                        <p class="text-zinc-500">Assorted freshly baked cookies</p>
+                    </div>
+                    <div class="text-4xl font-bold text-amber-600 mt-auto">₹89</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ABOUT SECTION -->
+    <section id="about" class="py-24 bg-white dark:bg-zinc-950">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div>
+                    <img src="https://picsum.photos/id/870/800/900" 
+                         alt="Zest Cafe Interior" 
+                         class="rounded-3xl shadow-2xl w-full">
+                </div>
+                <div class="space-y-12">
+                    <div>
+                        <div class="inline text-amber-600 text-3xl font-medium">4.7★ Google Rating</div>
+                        <h2 class="text-6xl font-bold tracking-tight leading-none mt-3">About Zest Cafe</h2>
+                        <p class="text-3xl font-light mt-4">Your Second Home in Srikakulam</p>
+                    </div>
+                    
+                    <div class="prose dark:prose-invert text-xl leading-relaxed">
+                        <p>Zest Cafe opened its doors in 2020 with a simple mission: to create a warm, inviting space where every cup of coffee tells a story. Nestled in the heart of Srikakulam, we've become the go-to spot for coffee lovers, students looking for a cozy study corner, and friends catching up over delicious food.</p>
+                        <p>Our cafe is designed to be your second home — whether you're here to work on your laptop, have a meaningful conversation, or simply unwind with a book and a perfectly brewed coffee.</p>
+                    </div>
+
+                    <!-- 4 Value Cards -->
+                    <div class="grid grid-cols-2 gap-8">
+                        <div class="bg-amber-50 dark:bg-zinc-900 p-8 rounded-3xl">
+                            <div class="text-5xl mb-6">☕</div>
+                            <h4 class="font-semibold text-2xl">Premium Quality</h4>
+                            <p class="text-zinc-500 mt-3">Handcrafted beverages made with the finest beans and ingredients</p>
+                        </div>
+                        <div class="bg-amber-50 dark:bg-zinc-900 p-8 rounded-3xl">
+                            <div class="text-5xl mb-6">❤️</div>
+                            <h4 class="font-semibold text-2xl">Made with Love</h4>
+                            <p class="text-zinc-500 mt-3">Every cup is prepared with passion and attention to detail</p>
+                        </div>
+                        <div class="bg-amber-50 dark:bg-zinc-900 p-8 rounded-3xl">
+                            <div class="text-5xl mb-6">👥</div>
+                            <h4 class="font-semibold text-2xl">Community Hub</h4>
+                            <p class="text-zinc-500 mt-3">A welcoming space for friends, students, and professionals</p>
+                        </div>
+                        <div class="bg-amber-50 dark:bg-zinc-900 p-8 rounded-3xl">
+                            <div class="text-5xl mb-6">🪑</div>
+                            <h4 class="font-semibold text-2xl">Cozy Atmosphere</h4>
+                            <p class="text-zinc-500 mt-3">Warm lighting and comfortable seating for the perfect experience</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="py-24 bg-amber-50 dark:bg-zinc-900">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-5xl font-bold text-center mb-16">What Our Customers Say</h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white dark:bg-zinc-800 p-10 rounded-3xl">
+                    <div class="text-5xl text-amber-400 mb-6">★★★★★</div>
+                    <p class="text-2xl leading-tight">"Amazing ambience! Perfect place for work and meetings. The coffee is exceptional."</p>
+                    <div class="mt-12 flex items-center gap-4">
+                        <div class="w-12 h-12 bg-zinc-200 rounded-2xl"></div>
+                        <div>
+                            <p class="font-semibold">Priya Sharma</p>
+                            <p class="text-sm text-zinc-500">2 weeks ago</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-zinc-800 p-10 rounded-3xl">
+                    <div class="text-5xl text-amber-400 mb-6">★★★★★</div>
+                    <p class="text-2xl leading-tight">"Best cafe in Srikakulam! Love their cold brew and the staff is super friendly."</p>
+                    <div class="mt-12 flex items-center gap-4">
+                        <div class="w-12 h-12 bg-zinc-200 rounded-2xl"></div>
+                        <div>
+                            <p class="font-semibold">Rahul Kumar</p>
+                            <p class="text-sm text-zinc-500">1 month ago</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-zinc-800 p-10 rounded-3xl">
+                    <div class="text-5xl text-amber-400 mb-6">★★★★★</div>
+                    <p class="text-2xl leading-tight">"Great food and cozy atmosphere. The cheesecake is a must-try!"</p>
+                    <div class="mt-12 flex items-center gap-4">
+                        <div class="w-12 h-12 bg-zinc-200 rounded-2xl"></div>
+                        <div>
+                            <p class="font-semibold">Sneha Reddy</p>
+                            <p class="text-sm text-zinc-500">3 weeks ago</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LOCATION -->
+    <section id="location" class="py-24 bg-white dark:bg-zinc-950">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-6xl font-bold">Find Us Here</h2>
+                <p class="text-3xl mt-4">Located in the heart of Srikakulam. Come visit us for an unforgettable coffee experience!</p>
+            </div>
+            
+            <div class="bg-zinc-100 dark:bg-zinc-900 rounded-3xl overflow-hidden shadow-2xl">
+                <a href="https://maps.app.goo.gl/9eZT2AdAv8UhT23E9?g_st=aw" target="_blank" 
+                   class="block relative">
+                    <img src="https://picsum.photos/id/1016/1400/700" 
+                         alt="Zest Cafe Map" 
+                         class="w-full h-auto">
+                    <div class="absolute bottom-8 right-8 bg-white dark:bg-zinc-900 rounded-3xl px-10 py-5 shadow-2xl flex items-center gap-4 text-2xl font-semibold text-amber-600 hover:scale-105 transition">
+                        Get Directions 
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="mt-10 grid md:grid-cols-3 gap-8 text-center">
+                <div>
+                    <div class="text-2xl font-medium">Our Address</div>
+                    <p class="text-xl mt-3">Illisipuram, Meher Nager,<br>Srikakulam, Andhra Pradesh 532001</p>
+                </div>
+                <div>
+                    <div class="text-2xl font-medium">Opening Hours</div>
+                    <p class="text-xl mt-3">Every Day<br><span class="font-bold text-3xl text-emerald-500">9:00 AM - 10:00 PM</span></p>
+                    <p class="mt-2 text-emerald-500 font-medium">Open Now</p>
+                </div>
+                <div>
+                    <div class="text-2xl font-medium">Call Us</div>
+                    <a href="tel:+919642929909" class="block text-4xl font-bold text-amber-600 mt-3 hover:underline">+91 96429 29909</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- READY TO EXPERIENCE -->
+    <section class="py-20 bg-gradient-to-r from-amber-500 to-orange-500 text-white">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <h2 class="text-6xl font-bold tracking-tight">Ready to Experience Zest?</h2>
+            <p class="text-3xl mt-4">Visit us today and discover why we're Srikakulam's favorite cafe!</p>
+            
+            <div class="flex flex-col md:flex-row gap-8 justify-center mt-16">
+                <!-- Navigate Card -->
+                <a href="https://maps.app.goo.gl/9eZT2AdAv8UhT23E9?g_st=aw" target="_blank"
+                   class="bg-white/20 hover:bg-white/30 backdrop-blur-xl border border-white/30 rounded-3xl p-10 w-full md:w-96 transition-all">
+                    <i class="fas fa-map-marker-alt text-6xl mb-6"></i>
+                    <div class="text-3xl font-semibold">Navigate Now</div>
+                    <div class="text-xl mt-2">Get instant directions</div>
+                </a>
+                
+                <!-- Call Card -->
+                <a href="tel:+919642929909"
+                   class="bg-white/20 hover:bg-white/30 backdrop-blur-xl border border-white/30 rounded-3xl p-10 w-full md:w-96 transition-all">
+                    <i class="fas fa-phone-volume text-6xl mb-6"></i>
+                    <div class="text-3xl font-semibold">Call to Order</div>
+                    <div class="text-xl mt-2">+91 96429 29909</div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT / GET IN TOUCH -->
+    <section id="contact" class="py-24 bg-white dark:bg-zinc-950">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-12 gap-16">
+                <!-- Left -->
+                <div class="md:col-span-5">
+                    <h2 class="text-6xl font-bold">Get In Touch</h2>
+                    <p class="text-3xl mt-6 leading-tight">Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+                    
+                    <div class="mt-16 space-y-8">
+                        <div class="flex gap-6">
+                            <i class="fas fa-phone text-4xl text-amber-500 mt-1"></i>
+                            <div>
+                                <div class="font-medium text-xl">Call Us</div>
+                                <a href="tel:+919642929909" class="text-4xl font-bold hover:text-amber-600">+91 96429 29909</a>
+                            </div>
+                        </div>
+                        <div class="flex gap-6">
+                            <i class="fas fa-envelope text-4xl text-amber-500 mt-1"></i>
+                            <div>
+                                <div class="font-medium text-xl">Email Us</div>
+                                <a href="mailto:hello@zestcafe.com" class="text-4xl font-bold hover:text-amber-600">hello@zestcafe.com</a>
+                            </div>
+                        </div>
+                        <div class="flex gap-6">
+                            <i class="fas fa-location-dot text-4xl text-amber-500 mt-1"></i>
+                            <div>
+                                <div class="font-medium text-xl">Visit Us</div>
+                                <p class="text-2xl">Illisipuram, Meher Nager,<br>Srikakulam, Andhra Pradesh 532001</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Social + Footer info -->
+                <div class="md:col-span-7 bg-amber-50 dark:bg-zinc-900 rounded-3xl p-12">
+                    <div class="text-4xl font-medium mb-8">Follow Us</div>
+                    <div class="flex gap-8 text-3xl">
+                        <a href="#" class="hover:text-amber-500 transition">Instagram</a>
+                        <a href="#" class="hover:text-amber-500 transition">Facebook</a>
+                    </div>
+                    
+                    <div class="mt-16 pt-12 border-t border-amber-200 dark:border-zinc-700">
+                        <div class="flex items-center gap-4">
+                            <div class="text-6xl font-black text-amber-400">ZC</div>
+                            <div>
+                                <div class="font-bold text-3xl">Zest Cafe</div>
+                                <div class="text-xl">Where every sip tells a story</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-10 text-2xl">★★★★★ <span class="text-amber-500">4.7 Rating</span></div>
+                    
+                    <!-- Quick Links -->
+                    <div class="grid grid-cols-2 gap-x-12 gap-y-4 mt-14 text-xl">
+                        <a href="#" class="hover:underline">Home</a>
+                        <a href="#" class="hover:underline">Menu</a>
+                        <a href="#" class="hover:underline">About</a>
+                        <a href="#" class="hover:underline">Location</a>
+                        <a href="#" class="hover:underline">Contact</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-zinc-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-6 text-center text-sm">
+            <p>© 2026 Zest Cafe • Srikakulam, Andhra Pradesh</p>
+            <p class="mt-2 text-zinc-500">Made with ❤️ for coffee lovers</p>
+        </div>
+    </footer>
+
+    <!-- MODALS -->
+    <div id="modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[999]">
+        <div class="modal bg-white dark:bg-zinc-800 max-w-3xl w-full mx-4 rounded-3xl overflow-hidden">
+            <!-- Modal content loaded by JS -->
+            <div id="modal-content" class="p-8"></div>
+        </div>
+    </div>
+
+    <script>
+        // Tailwind script already loaded via CDN
+        function initTailwind() {
+            // Already initialized by script tag
+        }
+
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+        
+        themeToggle.addEventListener('click', () => {
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                themeToggle.innerHTML = '☀️';
+                localStorage.theme = 'light';
+            } else {
+                html.classList.add('dark');
+                themeToggle.innerHTML = '🌙';
+                localStorage.theme = 'dark';
+            }
+        });
+
+        // Load saved theme
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+            themeToggle.innerHTML = '🌙';
+        }
+
+        // Hamburger
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        hamburger.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            const bars = hamburger.querySelectorAll('.bar');
+            bars.forEach((bar, i) => {
+                if (mobileMenu.classList.contains('hidden')) {
+                    bar.style.transform = 'none';
+                } else {
+                    if (i === 0) bar.style.transform = 'rotate(45deg) translate(5px, 6px)';
+                    if (i === 1) bar.style.opacity = '0';
+                    if (i === 2) bar.style.transform = 'rotate(-45deg) translate(5px, -6px)';
+                }
+            });
+        });
+
+        // Modal System
+        let currentModal = 0;
+        
+        const modal = document.getElementById('modal');
+        const modalContent = document.getElementById('modal-content');
+        
+        function closeModal() {
+            modal.classList.add('hidden');
+        }
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+        
+        function showModal(category) {
+            let htmlContent = '';
+            
+            if (category === 0) { // Cold Coffee - sample
+                htmlContent = `
+                    <div class="flex justify-between items-center mb-8">
+                        <h3 class="text-5xl font-bold">Cold Coffee ❄️</h3>
+                        <button onclick="closeModal()" class="text-4xl">×</button>
+                    </div>
+                    <img src="https://picsum.photos/id/292/800/500" class="w-full rounded-3xl mb-8" alt="Cold Coffee">
+                    <div class="grid gap-6 text-2xl">
+                        <div class="flex justify-between border-b pb-4"><span>Iced Latte</span><span class="font-bold">₹129</span></div>
+                        <div class="flex justify-between border-b pb-4"><span>Cold Brew</span><span class="font-bold">₹139</span></div>
+                        <div class="flex justify-between"><span>Frappuccino</span><span class="font-bold">₹159</span></div>
+                    </div>
+                `;
+            } else if (category === 1) { // Hot Coffee
+                htmlContent = `
+                    <div class="flex justify-between items-center mb-8">
+                        <h3 class="text-5xl font-bold">Hot Coffee ☕</h3>
+                        <button onclick="closeModal()" class="text-4xl">×</button>
+                    </div>
+                    <img src="https://picsum.photos/id/201/800/500" class="w-full rounded-3xl mb-8" alt="Hot Coffee">
+                    <div class="grid gap-6 text-2xl">
+                        <div class="flex justify-between border-b pb-4"><span>Classic Espresso</span><span class="font-bold">₹89</span></div>
+                        <div class="flex justify-between border-b pb-4"><span>Cappuccino</span><span class="font-bold">₹119</span></div>
+                        <div class="flex justify-between border-b pb-4"><span>Mocha</span><span class="font-bold">₹149</span></div>
+                    </div>
+                `;
+            } else if (category === 2) { // Cookies
+                htmlContent = `
+                    <div class="flex justify-between items-center mb-8">
+                        <h3 class="text-5xl font-bold">Cookies 🍪</h3>
+                        <button onclick="closeModal()" class="text-4xl">×</button>
+                    </div>
+                    <img src="https://picsum.photos/id/312/800/500" class="w-full rounded-3xl mb-8" alt="Cookies">
+                    <div class="grid gap-6 text-2xl">
+                        <div class="flex justify-between border-b pb-4"><span>Chocolate Chip</span><span class="font-bold">₹89</span></div>
+                        <div class="flex justify-between"><span>Cookie Platter</span><span class="font-bold">₹89</span></div>
+                    </div>
+                `;
+            } else if (category === 3) { // Desserts
+                htmlContent = `
+                    <div class="flex justify-between items-center mb-8">
+                        <h3 class="text-5xl font-bold">Desserts 🎂</h3>
+                        <button onclick="closeModal()" class="text-4xl">×</button>
+                    </div>
+                    <img src="https://picsum.photos/id/870/800/500" class="w-full rounded-3xl mb-8" alt="Desserts">
+                    <div class="grid gap-6 text-2xl">
+                        <div class="flex justify-between border-b pb-4"><span>Chocolate Brownie</span><span class="font-bold">₹99</span></div>
+                        <div class="flex justify-between border-b pb-4"><span>Cheesecake</span><span class="font-bold">₹129</span></div>
+                        <div class="flex justify-between"><span>Tiramisu</span><span class="font-bold">₹149</span></div>
+                 `;
+            }
+            
+            modalContent.innerHTML = htmlContent;
+            modal.classList.remove('hidden');
+        }
+
+        // Close modal on ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                if (this.getAttribute('href') !== '#') {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            });
+        });
+
+        // Keyboard support for mobile menu
+        console.log('%c✅ Zest Cafe website loaded successfully! Premium glow, dark mode, call-to-action & modals ready.', 'color:#f59e0b; font-size:14px');
+    </script>
+</body>
+</html>
